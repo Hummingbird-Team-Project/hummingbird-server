@@ -1,0 +1,50 @@
+name: Build and Push to Remote Repository
+
+on:
+  push:
+    branches: [ "staging" ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/shortcuts-build-and-push-to-remote-repository.yml'
+      - 'dockerfiles/staging.Dockerfile'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Get package version
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create .env.staging
+        run: echo "${{ secrets.SHORTCUTS_ENV_PRODUCTION }}" > .env.staging
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ secrets.SHORTCUTS_IMAGE_REPO_NAME}}:latest \
+            -f dockerfiles/shortcuts.production.Dockerfile \
+            --platform linux/amd64 .
+
+      - name: Tag & Push
+        run: |
+          docker tag ${{ secrets.SHORTCUTS_IMAGE_REPO_NAME }}:latest ${{ secrets.ACCOUNT_ID}}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.SHORTCUTS_IMAGE_REPO_NAME }}:$VERSION
+          docker push ${{ secrets.ACCOUNT_ID}}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.SHORTCUTS_IMAGE_REPO_NAME }}:$VERSION
+          
+          docker tag ${{ secrets.SHORTCUTS_IMAGE_REPO_NAME }}:latest ${{ secrets.ACCOUNT_ID}}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.SHORTCUTS_IMAGE_REPO_NAME }}:latest
+          docker push ${{ secrets.ACCOUNT_ID}}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.SHORTCUTS_IMAGE_REPO_NAME }}:latest

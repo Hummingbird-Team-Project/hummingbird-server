@@ -11,7 +11,7 @@ import { UserEntity } from './user.entity';
 
 @Entity('dday')
 export class DdayEntity implements DdayDomain {
-  @PrimaryGeneratedColumn({ name: 'dday_in', unsigned: true, type: 'bigint' })
+  @PrimaryGeneratedColumn({ name: 'dday_id', unsigned: true, type: 'bigint' })
   ddayId: string;
 
   @Column({ name: 'user_id', nullable: false, type: 'int', unsigned: true })

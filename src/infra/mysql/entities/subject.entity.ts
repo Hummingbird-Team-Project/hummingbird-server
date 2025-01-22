@@ -31,7 +31,7 @@ export class SubjectEntity implements SubjectDomain {
   @Column({ type: 'char', length: 6, nullable: false })
   color: string;
 
-  @Column({ type: 'tinyint', unsigned: true, nullable: false })
+  @Column({ type: 'tinyint', unsigned: false, nullable: false })
   order: number;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
