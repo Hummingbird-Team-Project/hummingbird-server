@@ -18,10 +18,6 @@ export class GetUserInfoController {
   public async execute(
     @CurrentUser() user: JwtPayload,
   ): Promise<IGetUserInfoResDto> {
-    const userDomain = await this.getUserInfoService.execute(user.userId);
-
-    return {
-      nickname: userDomain.nickname,
-    };
+    return await this.getUserInfoService.execute(user.userId);
   }
 }

@@ -39,6 +39,8 @@ export class StudyRecordModel extends Document implements StudyRecordDomain {
     type: [
       {
         title: { type: String, required: true },
+        color: { type: String, required: true },
+        order: { type: Number, required: true },
         duration: { type: Number, required: true },
         totalBreak: { type: Number, required: true },
         startAt: { type: Number, required: true },
@@ -50,6 +52,8 @@ export class StudyRecordModel extends Document implements StudyRecordDomain {
   })
   studies: {
     title: string;
+    color: string;
+    order: number;
     duration: number;
     totalBreak: number;
     startAt: number;

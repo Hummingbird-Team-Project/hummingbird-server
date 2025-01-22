@@ -6,6 +6,8 @@ export class AddStudyRecordServiceInput {
     public readonly userId: number,
     public readonly totalDuration: number,
     public readonly title: string,
+    public readonly color: string,
+    public readonly order: number,
     public readonly duration: number,
     public readonly startAt: number,
     public readonly endAt: number,
@@ -19,6 +21,8 @@ export class AddStudyRecordServiceInput {
   mapToStudy() {
     return {
       title: this.title,
+      color: this.color,
+      order: this.order,
       duration: this.duration,
       startAt: this.startAt,
       endAt: this.endAt,

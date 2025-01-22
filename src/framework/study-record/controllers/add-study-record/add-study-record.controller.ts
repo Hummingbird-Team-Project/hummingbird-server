@@ -29,6 +29,8 @@ export class AddStudyRecordController {
         user.userId,
         body.totalDuration,
         body.title,
+        body.color,
+        body.order,
         body.duration,
         body.startAt,
         body.endAt,
